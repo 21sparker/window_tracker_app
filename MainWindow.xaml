@@ -10,6 +10,9 @@
         <DataTemplate DataType="{x:Type local:TrackingViewModel}">
             <local:TrackingView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type local:TrackToProjectViewModel}">
+            <local:TrackToProjectView/>
+        </DataTemplate>
         
     </Window.Resources>
     <Grid>

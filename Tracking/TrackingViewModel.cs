@@ -7,16 +7,17 @@ namespace WindowTrackerApp
 {
     public class TrackingViewModel : ObservableObject, IPageViewModel
     {
-        private SQLiteConnection _DBConnection;
+        private DatabaseGateway _DBGateway;
 
         public string Name { get { return "Tracking"; } }
         public TrackerService TrackerVM { get; set; }
 
-        public TrackingViewModel(SQLiteConnection dbConnection, TrackerService _trackingService)
+        public TrackingViewModel(DatabaseGateway dbGateway, TrackerService trackingService)
         {
-            _DBConnection = dbConnection;
+            _DBGateway = dbGateway;
 
-            TrackerVM = _trackingService;
+            TrackerVM = trackingService;
         }
+
     }
 }

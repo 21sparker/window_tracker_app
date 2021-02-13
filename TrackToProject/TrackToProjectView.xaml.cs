@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WindowTrackerApp.TrackToProject
+namespace WindowTrackerApp
 {
     /// <summary>
     /// Interaction logic for TrackToProjectView.xaml

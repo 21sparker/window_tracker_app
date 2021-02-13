@@ -21,5 +21,13 @@ namespace WindowTrackerApp
 
         public string WindowText { get; set; }
 
+        [Write(false)]
+        public TimeSpan TimeSpent { get; set; }
+
+        [Write(false)]
+        public ApplicationItem Application { get; set; }
+
+        [Write(false)]
+        public FileItem File { get; set; }
     }
 }

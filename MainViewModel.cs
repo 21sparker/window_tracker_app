@@ -27,7 +27,7 @@ namespace WindowTrackerApp
         /// <summary>
         /// Data application EF Core context
         /// </summary>
-        private SQLiteConnection _DBConnection;
+        private DatabaseGateway _DBGateway;
         private TrackerService _trackerService;
         private CancellationTokenSource _cancelTokenSource;
         #endregion
@@ -37,14 +37,15 @@ namespace WindowTrackerApp
         public MainViewModel()
         {
             // Connect to database
-            _DBConnection = new SQLiteConnection($"Data Source={App.databasePath};");
+            _DBGateway = new DatabaseGateway($"Data Source={App.databasePath};");
             
             // Start Tracking Service
-            _trackerService = new TrackerService(_DBConnection);
+            _trackerService = new TrackerService(_DBGateway);
             BeginTracking();
 
             // Add available pages
-            PageViewModels.Add(new TrackingViewModel(_DBConnection, _trackerService));
+            PageViewModels.Add(new TrackingViewModel(_DBGateway, _trackerService));
+            PageViewModels.Add(new TrackToProjectViewModel(_DBGateway));
 
             // Set starting page
             CurrentPageViewModel = PageViewModels[0];
@@ -107,7 +108,7 @@ namespace WindowTrackerApp
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
             //Close database connection
-            _DBConnection.Close();
+            _DBGateway.Close();
 
             // Cancel Tracking Service
             _cancelTokenSource.Cancel();

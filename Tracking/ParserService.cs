@@ -22,8 +22,21 @@ namespace WindowTrackerApp
     /// </summary>
     public static class ParserService
     {
-        private static List<string> customChromeDomains = new List<string>() { "Gmail", "Google Sheets", "Google Drive", "YouTube", "Google Calendar", "Google Docs"};
-        
+        private static List<string> customChromeDomains = new List<string>()
+        {
+            "Gmail",
+            "Google Sheets",
+            "Google Drive",
+            "Youtube",
+            "Google Calendar",
+            "Google Docs",
+            "Google Slides",
+            "Google Jamboard",
+            "Google Search",
+            "Chat",
+            "Stack Overflow",
+            "Quora"
+        };
 
 
         public static ParsedWindow ParseProcess(string procName, string procWindowTitle, Process proc)
@@ -61,6 +74,11 @@ namespace WindowTrackerApp
             string filePath = null;
             string fileName = null;
 
+            if (procWindowTitle == null)
+            {
+                procWindowTitle = "";
+            }
+
             if (procName == "chrome")
             {
                 appName = GetChromeDomainWebsite(procWindowTitle);
@@ -72,7 +90,7 @@ namespace WindowTrackerApp
             else if (procName == "UiPath.Studio")
             {
                 appName = "UiPath Studio";
-                fileName = procWindowTitle.Contains("-") ? null : procWindowTitle.Split('-')[1];
+                fileName = procWindowTitle.Contains("-") ? procWindowTitle.Split('-')[1] : null ;
             }
             else if (procName == "explorer")
             {
@@ -81,15 +99,31 @@ namespace WindowTrackerApp
             else if (procName == "EXCEL")
             {
                 appName = "Excel";
-                Microsoft.Office.Interop.Excel.Application excelApp = WindowTracker.ExcelInteropService.GetOpenExcelApplication(proc);
+
                 try
                 {
+                    Microsoft.Office.Interop.Excel.Application excelApp = WindowTracker.ExcelInteropService.GetOpenExcelApplication(proc);
                     fileName = excelApp.ActiveWorkbook.FullName;
                     filePath = excelApp.ActiveWorkbook.Path;
                 }
                 catch
                 {
                     // Do nothing, excel is open but we're not focused on a file.
+                }
+            }
+            else if (procName == "AlteryxGui")
+            {
+                appName = "Alteryx";
+
+                if (procWindowTitle.Contains("Alteryx Designer x64 - "))
+                {
+                    string[] splitTitle = procWindowTitle.Split(new string[] { "Alteryx Designer x64" }, StringSplitOptions.None);
+                    
+                    fileName = splitTitle[1];
+                    if (fileName.Last() == '*')
+                    {
+                        fileName = fileName.Remove(fileName.Length - 1, 1);
+                    }
                 }
             }
 
@@ -145,10 +179,9 @@ namespace WindowTrackerApp
         /// <returns>File Name</returns>
         private static string GetChromeAppFile(string procWindowTitle, string appName)
         {
-            if (appName == "Google Sheets" |
-                appName == "Google Docs")
+            if (appName == "Google Sheets" | appName == "Google Docs")
             {
-                return procWindowTitle.Split('-')[0];
+                return procWindowTitle.Split(new string[] { appName }, StringSplitOptions.None)[0];
             }
 
             return null;
